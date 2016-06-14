@@ -1,7 +1,6 @@
 <?php
 
 use Laravel\Config;
-use Laravel\HTML;
 
 /**
  * Gravatar bundle for the Laravel PHP framework.
@@ -102,7 +101,7 @@ class Gravatar
 	 */
 	public static function get_image($email, $size = null, $alt = '', $attributes = array())
 	{
-		return HTML::image(self::build_url($email, $size), $alt, $attributes);
+		return self::image(self::build_url($email, $size), $alt, $attributes);
 	}
 	
 	/**
@@ -110,7 +109,15 @@ class Gravatar
 	 */
 	public static function get_secure_image($email, $size = null, $alt = '', $attributes = array())
 	{
-		return HTML::image(self::build_url($email, $size, true), $alt, $attributes);
+		return self::image(self::build_url($email, $size, true), $alt, $attributes);
+	}
+	
+	/**
+	 * Get the html with image
+	 */
+	protected function image($url)
+	{
+		return = "<img src=\"$url\" />";
 	}
 	
 }
