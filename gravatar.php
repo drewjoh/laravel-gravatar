@@ -1,15 +1,14 @@
 <?php
 
 use Laravel\Config;
-use Laravel\HTML;
 
 /**
  * Gravatar bundle for the Laravel PHP framework.
  *
- * @author      Drew Johnston
- * @copyright   (c) 2012 - Drew Johnston
+ * @author      frowhy
+ * @copyright   (c) 2016 - frowhy
  * 
- * More info at: http://github.com/drewjoh/laravel-gravatar
+ * More info at: http://github.com/frowhy/laravel-gravatar
  */
 
 class Gravatar
@@ -31,7 +30,7 @@ class Gravatar
 	 */
 	public static function config($item)
 	{
-		return ( Config::has( 'gravatar.'.$item ) ) ? Config::get( 'gravatar.'.$item ) : null;
+		return(Config::has('gravatar.'.$item)) ? Config::get('gravatar.'.$item) : null;
 	}
 
 	/**
@@ -40,23 +39,23 @@ class Gravatar
 	 * @param string $email - The email to get the gravatar for.
 	 * @return string - The XHTML-safe URL to the gravatar.
 	 */
-	public static function build_url( $email, $size = null, $secure = null)
+	public static function build_url($email, $size = null, $secure = null)
 	{
 		// If we haven't used this class yet, pre-load our config cache
-		if(self::$config_cache === null)
+		if (self::$config_cache === null)
 			self::$config_cache = Config::get('common::gravatar');
 		
 		// Start building the URL, and deciding if we're doing this via HTTPS or HTTP.
-		if(
-			(self::$config_cache['auto_detect_ssl'] AND 
-				(isset($_SERVER['HTTPS']) AND $_SERVER['HTTPS'])
-			) OR
-			self::$config_cache['use_secure_url']
-			 OR 
-			$secure == true)
+		if (
+			(self::$config_cache['auto_detect_ssl'] AND
+			(isset($_SERVER['HTTPS']) AND $_SERVER['HTTPS'])) OR
+			self::$config_cache['use_secure_url'] OR 
+			$secure == true
+		) {
 			$url = static::HTTPS_URL;
-		else
+		} else {
 			$url = static::HTTP_URL;
+		}
 
 		// Tack the email hash onto the end of our Gravatar URL, then add our additional options.
 		$url .= self::get_email_hash($email)
@@ -78,39 +77,47 @@ class Gravatar
 	public static function get_email_hash($email)
 	{
 		// Hash created based on gravatar docs.
-		return hash( 'md5', strtolower( trim( $email ) ) );
+		return hash('md5', strtolower(trim($email)));
 	}
 	
 	/**
 	 * Get the gravatar
 	 */
-	public static function get( $email, $size = null )
+	public static function get($email, $size = null)
 	{
-		return self::build_url( $email, $size );
+		return self::build_url($email, $size);
 	}
 	
 	/**
 	 * Get the gravatar with forced secure connection
 	 */
-	public static function get_secure( $email, $size = null )
+	public static function get_secure($email, $size = null)
 	{
-		return self::build_url( $email, $size, true );
+		return self::build_url($email, $size, true);
 	}
 	
 	/**
 	 * Get the gravatar and return as image
 	 */
-	public static function get_image( $email, $size = null, $alt = '', $attributes = array() )
+	public static function get_image($email, $size = null, $alt = '', $attributes = array())
 	{
-		return HTML::image( self::build_url( $email, $size ), $alt, $attributes );
+		return self::image(self::build_url($email, $size), $alt, $attributes);
 	}
 	
 	/**
 	 * Get the gravatar with forced secure connection and return as image
 	 */
-	public static function get_secure_image( $email, $size = null, $alt = '', $attributes = array() )
+	public static function get_secure_image($email, $size = null, $alt = '', $attributes = array())
 	{
-		return HTML::image( self::build_url( $email, $size, true ), $alt, $attributes );
+		return self::image(self::build_url($email, $size, true), $alt, $attributes);
+	}
+	
+	/**
+	 * Get the html with image
+	 */
+	protected function image($url)
+	{
+		return = "<img src=\"$url\" />";
 	}
 	
 }
